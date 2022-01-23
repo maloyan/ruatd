@@ -13,9 +13,10 @@ num_workers: 4
 pin_memory: True
 device: cuda
 device_ids: [0, 1, 2, 3]
-epochs: 15
+epochs: 3
 lr: 0.0003
 
 model: sberbank-ai/rugpt3large_based_on_gpt2 #DeepPavlov/rubert-base-cased-sentence
 
 checkpoint: /root/RuATD/checkpoints/
+submission: /root/RuATD/submissions/

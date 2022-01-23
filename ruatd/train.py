@@ -88,6 +88,7 @@ def main(config: DictConfig):
         accuracy = metrics.accuracy_score(targets, outputs)
         print(f"Accuracy Score = {accuracy}")
         if roc_auc > best_roc_auc:
+            print("Model saved!")
             torch.save(
                 model.module.state_dict(),
                 f"{config.checkpoint}/{config.model.split('/')[-1]}.pt",
