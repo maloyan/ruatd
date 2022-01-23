@@ -1,0 +1,21 @@
+project: ruatd
+classification: binary
+
+data:
+  train: /root/RuATD/data/binary/train.csv
+  val: /root/RuATD/data/binary/val.csv
+  test: /root/RuATD/data/binary/test.csv
+
+max_len: 384
+
+batch_size: 30
+num_workers: 4
+pin_memory: True
+device: cuda
+device_ids: [0, 1, 2, 3]
+epochs: 15
+lr: 0.0003
+
+model: sberbank-ai/rugpt3large_based_on_gpt2 #DeepPavlov/rubert-base-cased-sentence
+
+checkpoint: /root/RuATD/checkpoints/
