@@ -4,10 +4,14 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import wandb
-from omegaconf import DictConfig, OmegaConf
-from sklearn import metrics, model_selection
+from omegaconf import DictConfig
+from sklearn import metrics
 from torch.utils.data import DataLoader
-from transformers import AdamW, GPT2LMHeadModel, get_linear_schedule_with_warmup
+from transformers import (
+    AdamW,
+    AutoModelForSequenceClassification,
+    get_linear_schedule_with_warmup,
+)
 
 from ruatd.dataset import RuARDDataset
 from ruatd.engine import eval_fn, train_fn
@@ -38,6 +42,7 @@ def main(config: DictConfig):
         batch_size=config.batch_size,
         num_workers=config.num_workers,
         pin_memory=config.pin_memory,
+        drop_last=True,
     )
 
     valid_dataset = RuARDDataset(
@@ -49,10 +54,13 @@ def main(config: DictConfig):
         batch_size=config.batch_size,
         num_workers=config.num_workers,
         pin_memory=config.pin_memory,
+        drop_last=True,
     )
 
     device = torch.device(config.device)
-    model = BERTBaseUncased(config)
+    model = AutoModelForSequenceClassification.from_pretrained(
+        config.model, num_labels=2, ignore_mismatched_sizes=True
+    )
     model.to(device)
     model = torch.nn.DataParallel(model, device_ids=config["device_ids"])
 
@@ -79,27 +87,27 @@ def main(config: DictConfig):
         optimizer, num_warmup_steps=0, num_training_steps=num_train_steps
     )
 
-    best_roc_auc = 0
+    best_loss = 10000
     for _ in range(config.epochs):
         train_loss = train_fn(train_data_loader, model, optimizer, device, scheduler)
         val_loss, outputs, targets = eval_fn(valid_data_loader, model, device)
-        roc_auc = metrics.roc_auc_score(targets, outputs)
-        outputs = np.array(outputs) >= 0.5
+        # roc_auc = metrics.roc_auc_score(targets, outputs)
+        # outputs = np.array(outputs) >= 0.5
         accuracy = metrics.accuracy_score(targets, outputs)
         print(f"Accuracy Score = {accuracy}")
-        if roc_auc > best_roc_auc:
+        if val_loss < best_loss:
             print("Model saved!")
             torch.save(
                 model.module.state_dict(),
                 f"{config.checkpoint}/{config.model.split('/')[-1]}.pt",
             )
-            best_roc_auc = roc_auc
+            best_loss = val_loss
 
         wandb.log(
             {
                 "train_loss": train_loss,
                 "val_loss": val_loss,
-                "val_roc_auc": roc_auc,
+                # "val_roc_auc": roc_auc,
                 "val_accuracy": accuracy,
             }
         )

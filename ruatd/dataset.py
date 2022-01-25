@@ -9,7 +9,7 @@ class RuARDDataset(Dataset):
         self.target = target
         self.is_test = is_test
         self.tokenizer = AutoTokenizer.from_pretrained(config.model)
-        self.tokenizer.pad_token = 0
+        #self.tokenizer.pad_token = 0
         self.max_len = config.max_len
 
     def __len__(self):

@@ -6,17 +6,17 @@ data:
   val: /root/RuATD/data/binary/val.csv
   test: /root/RuATD/data/binary/test.csv
 
-max_len: 384
+max_len: 512
 
-batch_size: 30
+batch_size: 40
 num_workers: 4
 pin_memory: True
 device: cuda
-device_ids: [0, 1, 2, 3]
+device_ids: [0, 1, 2, 3, 4]
 epochs: 3
-lr: 0.0003
+lr: 0.00001
 
-model: sberbank-ai/rugpt3large_based_on_gpt2 #DeepPavlov/rubert-base-cased-sentence
+model: DeepPavlov/xlm-roberta-large-en-ru-mnli #DeepPavlov/xlm-roberta-large-en-ru #DeepPavlov/rubert-base-cased
 
 checkpoint: /root/RuATD/checkpoints/
 submission: /root/RuATD/submissions/
