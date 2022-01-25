@@ -1,22 +1,12 @@
 import hydra
-import numpy as np
 import pandas as pd
 import torch
-import torch.nn as nn
-from omegaconf import DictConfig, OmegaConf
-from sklearn import metrics, model_selection
-from sklearn.metrics import precision_recall_curve
+from omegaconf import DictConfig
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-from transformers import (
-    AdamW,
-    AutoModelForSequenceClassification,
-    get_linear_schedule_with_warmup,
-)
+from transformers import AutoModelForSequenceClassification
 
 from ruatd.dataset import RuARDDataset
-from ruatd.engine import eval_fn, train_fn
-from ruatd.model import BERTBaseUncased
 
 
 @hydra.main(config_path="config", config_name="bert")

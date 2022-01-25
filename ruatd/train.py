@@ -1,8 +1,6 @@
 import hydra
-import numpy as np
 import pandas as pd
 import torch
-import torch.nn as nn
 import wandb
 from omegaconf import DictConfig
 from sklearn import metrics
@@ -15,7 +13,6 @@ from transformers import (
 
 from ruatd.dataset import RuARDDataset
 from ruatd.engine import eval_fn, train_fn
-from ruatd.model import BERTBaseUncased
 
 
 @hydra.main(config_path="config", config_name="bert")
