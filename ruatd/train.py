@@ -56,7 +56,7 @@ def main(config: DictConfig):
 
     device = torch.device(config.device)
     model = AutoModelForSequenceClassification.from_pretrained(
-        config.model, num_labels=2, ignore_mismatched_sizes=True
+        config.model, num_labels=config.num_classes, ignore_mismatched_sizes=True
     )
     model.to(device)
     model = torch.nn.DataParallel(model, device_ids=config["device_ids"])

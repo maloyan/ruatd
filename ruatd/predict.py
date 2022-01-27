@@ -42,7 +42,7 @@ def main(config: DictConfig):
 
     device = torch.device(config.device)
     model = AutoModelForSequenceClassification.from_pretrained(
-        config.model, num_labels=2, ignore_mismatched_sizes=True
+        config.model, num_labels=config.num_classes, ignore_mismatched_sizes=True
     )
     model.load_state_dict(
         torch.load(f"{config.checkpoint}/{config.model.split('/')[-1]}.pt")
@@ -57,6 +57,7 @@ def main(config: DictConfig):
     # # locate the index of the largest f score
     # ix = np.argmax(fscore)
     # print('Best Threshold=%f, F-Score=%.3f' % (thresholds[ix], fscore[ix]))
+
     with torch.no_grad():
         for bi, inputs in tqdm(
             enumerate(test_data_loader), total=len(test_data_loader)
@@ -64,12 +65,12 @@ def main(config: DictConfig):
             for i in inputs.keys():
                 inputs[i] = inputs[i].squeeze(1).to(device)
             outputs = model(**inputs).logits.squeeze(-1)
-
-            fin_outputs.extend(outputs.argmax(axis=1).detach().cpu().numpy().tolist())
+            fin_outputs.extend(outputs[:, 0].detach().cpu().numpy().tolist())
+            # fin_outputs.extend(outputs.argmax(axis=1).detach().cpu().numpy().tolist())
     df_test["Class"] = fin_outputs
-    # df_test[["Id", "Class"]].to_csv(
-    #     f"{config.submission}/prob_submission.csv", index=None
-    # )
+    df_test[["Id", "Class"]].to_csv(
+        f"{config.submission}/prob_{config.model.split('/')[-1]}.csv", index=None
+    )
 
     # outputs = np.array(df_test["Class"]) >= np.median(fin_outputs) #thresholds[ix]
     # df_test["Class"] = df_test["Class"] >= np.median(fin_outputs)

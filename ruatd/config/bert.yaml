@@ -13,10 +13,10 @@ num_workers: 4
 pin_memory: True
 device: cuda
 device_ids: [0, 1, 2, 3, 4]
-epochs: 3
+epochs: 5
 lr: 0.00001
-
-model: DeepPavlov/xlm-roberta-large-en-ru-mnli #DeepPavlov/xlm-roberta-large-en-ru #DeepPavlov/rubert-base-cased
+num_classes: 2
+model: IlyaGusev/mbart_ru_sum_gazeta #DeepPavlov/rubert-base-cased #DeepPavlov/xlm-roberta-large-en-ru 
 
 checkpoint: /root/RuATD/checkpoints/
 submission: /root/RuATD/submissions/
