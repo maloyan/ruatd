@@ -15,7 +15,7 @@ from ruatd.dataset import RuARDDataset
 from ruatd.engine import eval_fn, train_fn
 
 
-@hydra.main(config_path="config", config_name="bert")
+@hydra.main(config_path="config", config_name="binary")
 def main(config: DictConfig):
 
     wandb.init(
@@ -26,10 +26,33 @@ def main(config: DictConfig):
     df_train = pd.read_csv(config.data.train)
     df_valid = pd.read_csv(config.data.val)
     df_test = pd.read_csv(config.data.test)
-
-    df_train.Class = df_train.Class.apply(lambda x: 1 if x == "M" else 0)
-    df_valid.Class = df_valid.Class.apply(lambda x: 1 if x == "M" else 0)
-
+    if config.classification == "multiclass":
+        class_dict = {
+            "ruGPT3-Small": 0,
+            "ruGPT3-Medium": 1,
+            "OPUS-MT": 2,
+            "M2M-100": 3,
+            "ruT5-Base-Multitask": 4,
+            "Human": 5,
+            "M-BART50": 6,
+            "ruGPT3-Large": 7,
+            "ruGPT2-Large": 8,
+            "M-BART": 9,
+            "ruT5-Large": 10,
+            "ruT5-Base": 11,
+            "mT5-Large": 12,
+            "mT5-Small": 13,
+        }
+    else:
+        class_dict = {
+            "H": 0,
+            "M": 1
+        }
+    print(class_dict)
+    df_train.Class = df_train.Class.map(class_dict)
+    df_valid.Class = df_valid.Class.map(class_dict)
+    print(df_train.head())
+    print(df_valid.head())
     train_dataset = RuARDDataset(
         text=df_train.Text.values, target=df_train.Class.values, config=config
     )
@@ -96,7 +119,7 @@ def main(config: DictConfig):
             print("Model saved!")
             torch.save(
                 model.module.state_dict(),
-                f"{config.checkpoint}/{config.model.split('/')[-1]}.pt",
+                f"{config.checkpoint}/{config.classification}_{config.model.split('/')[-1]}.pt",
             )
             best_loss = val_loss
 

@@ -58,3 +58,18 @@ def eval_fn(data_loader, model, device):
             fin_targets.extend(targets.detach().cpu().numpy())
             fin_outputs.extend(predictions.detach().cpu().numpy().tolist())
     return val_loss / len(data_loader), fin_outputs, fin_targets
+
+
+def predict_fn(data_loader, model, config):
+    model.eval()
+    fin_outputs_prob = []
+    fin_outputs = []
+
+    with torch.no_grad():
+        for bi, inputs in tqdm(enumerate(data_loader), total=len(data_loader)):
+            for i in inputs.keys():
+                inputs[i] = inputs[i].squeeze(1).to(config.device)
+            outputs = model(**inputs).logits.squeeze(-1)
+            fin_outputs_prob.extend(outputs.detach().cpu().numpy().tolist())
+            fin_outputs.extend(outputs.argmax(axis=1).detach().cpu().numpy().tolist())
+    return fin_outputs_prob, fin_outputs

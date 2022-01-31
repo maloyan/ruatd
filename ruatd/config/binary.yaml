@@ -16,7 +16,7 @@ device_ids: [0, 1, 2, 3, 4]
 epochs: 5
 lr: 0.00001
 num_classes: 2
-model: IlyaGusev/mbart_ru_sum_gazeta #DeepPavlov/rubert-base-cased #DeepPavlov/xlm-roberta-large-en-ru 
+model: clips/mfaq #DeepPavlov/xlm-roberta-large-en-ru  #DeepPavlov/rubert-base-cased #IlyaGusev/mbart_ru_sum_gazeta #MoritzLaurer/mDeBERTa-v3-base-mnli-xnli #sberbank-ai/rugpt3xl
 
 checkpoint: /root/RuATD/checkpoints/
 submission: /root/RuATD/submissions/
