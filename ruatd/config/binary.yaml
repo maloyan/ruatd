@@ -6,17 +6,24 @@ data:
   val: /root/RuATD/data/binary/val.csv
   test: /root/RuATD/data/binary/test.csv
 
-max_len: 512
+max_len: 256
 
 batch_size: 40
 num_workers: 4
 pin_memory: True
 device: cuda
 device_ids: [0, 1, 2, 3, 4]
-epochs: 5
+epochs: 3
 lr: 0.00001
 num_classes: 2
-model: clips/mfaq #DeepPavlov/xlm-roberta-large-en-ru  #DeepPavlov/rubert-base-cased #IlyaGusev/mbart_ru_sum_gazeta #MoritzLaurer/mDeBERTa-v3-base-mnli-xnli #sberbank-ai/rugpt3xl
+num_folds: 5
+model: DeepPavlov/xlm-roberta-large-en-ru-mnli 
+#DeepPavlov/distilrubert-tiny-cased-conversational
+#sberbank-ai/sbert_large_nlu_ru #IlyaGusev/mbart_ru_sum_gazeta #DeepPavlov/rubert-base-cased #MoritzLaurer/mDeBERTa-v3-base-mnli-xnli #DeepPavlov/xlm-roberta-large-en-ru-mnli 
+###Geotrend/distilbert-base-ru-cased
+##
+## #clips/mfaq  
+##sberbank-ai/rugpt3xl
 
 checkpoint: /root/RuATD/checkpoints/
 submission: /root/RuATD/submissions/
